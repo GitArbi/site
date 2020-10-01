@@ -1,0 +1,100 @@
+(function() {
+	function getCookie(name) {
+	    return unescape((document.cookie.match('(^|; )' + name + '=([^;]*)') || 0)[2] || "");
+	}
+
+	function reset(w, doc) {
+		var n=null;
+		w.turn_beacon_data=n;
+		w.turn_beacon_price=n;
+		w.turn_beacon_currency=n;
+		w.turn_beacon_url=n;
+		w.turn_client_track_id=n;
+		w.turn_beacon_referrer_url=n;
+		w.turn_beacon_redirect_url=n;
+		w.fpcid=n;
+	}
+
+	function quote(x) {
+		return x != null ? '"' + x + '"' : '""' ;
+	}
+
+	function encode(x) {
+		if(typeof encodeURIComponent == "function") {
+			return encodeURIComponent(x);
+		} else { 
+			return escape(x);
+		}
+	}
+	
+	function setDefaults(w, doc) {
+		var fpcid = getCookie('fpcid');
+		if (parseInt(fpcid) > 0) {
+			w.fpcid = fpcid;
+		}
+	}
+	
+	function addBeaconUrlParam(w, paramName, paramValue) {
+		if(paramValue != null) {
+			w.turn_beacon_url += "&" + paramName + "=" + encode(paramValue);
+		}
+	}
+	
+		
+	function setBeaconUrl(w, doc) {
+					w.turn_beacon_url = "https://r.turn.com/r/beacon?";
+							w.turn_beacon_data = "o_Qr4Iy2jkA-aAn30JR4CmlEhCZsnBVl9k73je0epjKsCJLkQIhfpxDKJ4UubRDPBT_XBomLh8PGjwZY0pJQOQ";
+			addBeaconUrlParam(w, "b2", w.turn_beacon_data);
+				addBeaconUrlParam(w, "jsb", "1");
+					addBeaconUrlParam(w, "bprice", w.turn_beacon_price);
+							addBeaconUrlParam(w, "currency", w.turn_beacon_currency);
+							addBeaconUrlParam(w, "cid", w.turn_client_track_id);	
+				addBeaconUrlParam(w, "rnd", Math.random());
+					addBeaconUrlParam(w, "ref", w.turn_beacon_referrer_url);	
+							addBeaconUrlParam(w, "url", w.turn_beacon_redirect_url);	
+				if (w.fpcid) {
+			addBeaconUrlParam(w, "fpcid", w.fpcid);
+		}
+
+	}
+	
+	function beaconImg(w, doc) {
+		new Image().src = w.turn_beacon_url;
+		afterBeaconImg(doc);
+	}
+
+	function afterBeaconImg(doc) {
+								
+						
+					}
+	
+	setDefaults(window, document);
+	setBeaconUrl(window, document);
+
+				if (window.fpcid) {
+						beaconImg(window, document);	
+		} else {
+						afterBeaconImg(document);
+
+						var firstScript = document.getElementsByTagName('script')[0],
+			  js = document.createElement('script');
+			js.onload = function () {
+
+								var iframe = document.createElement('iframe');
+				iframe.style.cssText = "width: 0; height: 0; border: 0";
+				firstScript.parentNode.insertBefore(iframe, firstScript);
+				                                                iframe.src = 'https://ad2.cdns.turn.com/server/dynamic_ddc.htm?ssl=y&uid=' + getCookie('fpcid');
+				
+								if (window.turn_beacon_redirect_url_processed) {
+					new Image().src = window.turn_beacon_redirect_url_processed;
+				}
+				
+				reset(window, document);
+			};
+			js.src = window.turn_beacon_url;
+			firstScript.parentNode.insertBefore(js, firstScript);
+		}
+		
+			
+}
+)()

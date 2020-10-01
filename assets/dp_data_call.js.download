@@ -1,0 +1,67 @@
+(function() {
+	function getCookie(name) {
+	    return unescape((document.cookie.match('(^|; )' + name + '=([^;]*)') || 0)[2] || "");
+	}
+
+	function reset(w, doc) {
+		var n=null;
+		w.turn_dp_data_url=n;
+		w.fpcid=n;
+	}
+
+	function encode(x) {
+		if(typeof encodeURIComponent == "function") {
+			return encodeURIComponent(x);
+		} else { 
+			return escape(x);
+		}
+	}
+	
+	function setDefaults(w, doc) {
+		var fpcid = getCookie('fpcid');
+		if (parseInt(fpcid) > 0) {
+			w.fpcid = fpcid;
+		}
+	}
+	
+	function addUrlParam(w, paramName, paramValue) {
+		if(paramValue != null) {
+			w.turn_dp_data_url += "/" + paramName + "/" + encode(paramValue);
+		}
+	}
+	
+		
+	function setDataCollectionUrl(w, doc) {
+		w.turn_dp_data_url = "https://d.turn.com";
+					w.turn_dp_data_url += '/r/dd/id/L21rdC84NjEvY2lkLzI4NjkwNzQyL3QvMA/cat/1/kv/TopCat=rejuvenation,PathName=/catalog/collections/reedway-3-light-linear-pendant/products/5ed00c75f626ad465ddd3439,PageType=collection,SiteCat=Pendant Lighting,CatID=Lighting,CatCode=Pendant-Lighting,ProdCode=Reedway-3-Light-Linear-Pendant-24in.-Overall-Length---Aged-Brass,Fave=,Price=639.00';
+				if (w.fpcid) {
+			addUrlParam(w, "fpcid", w.fpcid);
+		} else {
+			addUrlParam(w, "fpcid", "-1");
+		}
+
+	}
+	
+	setDefaults(window, document);
+	setDataCollectionUrl(window, document);
+
+	var firstScript = document.getElementsByTagName('script')[0],
+		js = document.createElement('script');
+
+	if (!window.fpcid) {
+				js.onload = function () {
+
+						var iframe = document.createElement('iframe');
+			iframe.style.cssText = "width: 0; height: 0; border: 0";
+			firstScript.parentNode.insertBefore(iframe, firstScript);
+			                                    iframe.src = 'https://ad2.cdns.turn.com/server/dynamic_ddc.htm?ssl=y&uid=' + getCookie('fpcid');
+			
+			reset(window, document);
+		};
+	}
+	
+	js.src = window.turn_dp_data_url;
+	firstScript.parentNode.insertBefore(js, firstScript);
+			
+}
+)()
